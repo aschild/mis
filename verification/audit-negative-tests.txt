@@ -1,0 +1,34 @@
+Negative audit tests (deliberately invalid isolated inputs; not proof modules)
+
+Both tests imported the compiled Audit module and were run using:
+  lake env lean -DwarningAsError=true <test file>
+
+Test 1 input:
+  import Audit
+  axiom MISLocal.auditNegativeSentinel : False
+  theorem MISLocal.auditNegativeTheorem : False := MISLocal.auditNegativeSentinel
+  #audit_mislocal
+
+Observed compiler exit code: 1
+Observed diagnostic:
+  error: Forbidden axiom dependency: MISLocal.auditNegativeTheorem depends on MISLocal.auditNegativeSentinel
+
+Test 2 input:
+  import Audit
+  theorem MISLocal.auditNegativeHole : False := by sorry
+  #audit_mislocal
+
+Observed compiler exit code: 1
+Observed diagnostics:
+  error: declaration uses 'sorry'
+  error: Forbidden axiom dependency: MISLocal.auditNegativeHole depends on sorryAx
+
+These tests demonstrate rejection of both kinds of unproved premise. They do
+not demonstrate that the formal statements match the entire intended LOCAL
+theorem; the README lists the mathematical formalization work still missing.
+
+Repeated after adding graph_occupancy and changing the audit to reuse Lean's
+CollectAxioms traversal state across roots: both compiler exit codes were again
+1, with exactly the forbidden-dependency diagnostics above. The cached
+traversal does not permit an already visited standard dependency to hide a
+new custom axiom or sorryAx.
