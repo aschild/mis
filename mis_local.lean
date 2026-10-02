@@ -11970,6 +11970,7 @@ elab "#audit_mislocal" : command => do
 #print axioms MISLocal.TreeGeometry.concrete_finite_obstruction
 #check MISLocal.UniformLocalProtocol
 #check MISLocal.TreeGeometry.concrete_finite_obstruction
+#print axioms MISLocal.randomized_LOCAL_MIS_iid_not_littleO
 
 
 /- ===== Source: Tests.lean ===== -/
@@ -12098,7 +12099,3 @@ example (G : SimpleGraph (Fin 2)) [DecidableRel G.Adj]
   TreeGeometry.runAnonymous_zero_same_coin G A 0 1 x y (by
     change (x (Sum.inr 0) : Unit) = (y (Sum.inr 1) : Unit)
     exact @Subsingleton.elim Unit _ (x (Sum.inr 0)) (y (Sum.inr 1)))
-
-/-- Aaron added the following below -/
-
-#print axioms MISLocal.randomized_LOCAL_MIS_iid_not_littleO
